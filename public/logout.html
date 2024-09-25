@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout</title>
+    <script>
+        // Function to clear token from localStorage and redirect to home
+        function logout() {
+            localStorage.removeItem('token'); // Clear the stored token
+            window.location.href = '/'; // Redirect to the home page
+        }
+    </script>
+</head>
+<body onload="logout()">
+    <p>Logging out...</p>
+</body>
+</html>

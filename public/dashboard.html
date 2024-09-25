@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script>
+        // Check if the user is logged in
+        const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+        if (!token) { // If no token is found
+            // Redirect to the login page
+            window.location.href = '/login.html';
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>User Dashboard</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/logout.html">Logout</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Welcome to your dashboard!</h2>
+        <p>This is where you can manage your integrated farming tasks.</p>
+    </main>
+    <footer>
+        <p>&copy; 2024 Integrated Farming</p>
+    </footer>
+</body>
+</html>

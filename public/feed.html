@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Blog</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #4CAF50;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        /* Blog Container Styles */
+        #blogsContainer {
+            width: 100%;
+            max-width: 700px;
+            margin-bottom: 30px;
+        }
+
+        .blog-post {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+            transition: transform 0.2s;
+        }
+
+        .blog-post:hover {
+            transform: scale(1.02);
+        }
+
+        .blog-post h3 {
+            color: #333;
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .blog-post p {
+            color: #555;
+            font-size: 1.1rem;
+            margin: 10px 0;
+        }
+
+        .blog-post small {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        /* Form Styles */
+        form {
+            width: 100%;
+            max-width: 700px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        form input, form textarea, form button {
+            font-size: 1.1rem;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+
+        form input:focus, form textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        form textarea {
+            resize: none;
+            height: 100px;
+        }
+
+        form button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        form button:hover {
+            background-color: #45a049;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+
+            form, #blogsContainer {
+                max-width: 100%;
+            }
+
+            form input, form textarea, form button {
+                font-size: 1rem;
+            }
+
+            .blog-post h3 {
+                font-size: 1.3rem;
+            }
+
+            .blog-post p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2>Farmer Blog</h2>
+
+    <!-- Section to display the blogs -->
+    <div id="blogsContainer"></div>
+
+    <!-- Form for submitting a blog -->
+    <form id="blogForm">
+        <input type="text" id="farmerName" placeholder="Your Name" required />
+        <textarea id="blogContent" placeholder="Write your blog..." required></textarea>
+        <button type="submit">Submit Blog</button>
+    </form>
+
+    <script>
+        // Function to fetch and display blogs
+        const fetchBlogs = async () => {
+            try {
+                const response = await fetch('/getBlogs');
+                const blogs = await response.json();
+                const blogsContainer = document.getElementById('blogsContainer');
+
+                // Display fetched blogs
+                blogsContainer.innerHTML = blogs.map(blog => `
+                    <div class="blog-post">
+                        <h3>${blog.farmer_name}</h3>
+                        <p>${blog.content}</p>
+                        <small>${new Date(blog.created_at).toLocaleString()}</small>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error fetching blogs:', error);
+            }
+        };
+
+        // Event listener for blog form submission
+        document.getElementById('blogForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const farmerName = document.getElementById('farmerName').value;
+            const blogContent = document.getElementById('blogContent').value;
+
+            try {
+                const response = await fetch('/addBlog', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ farmerName, content: blogContent })
+                });
+
+                if (response.ok) {
+                    fetchBlogs();  // Refresh blog list after successful submission
+                    document.getElementById('blogForm').reset();  // Clear the form
+                } else {
+                    alert('Failed to add blog');
+                }
+            } catch (error) {
+                console.error('Error submitting blog:', error);
+                alert('Error occurred');
+            }
+        });
+
+        // Fetch blogs on page load
+        fetchBlogs();
+    </script>
+</body>
+</html>
